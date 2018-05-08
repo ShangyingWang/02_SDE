@@ -27,7 +27,7 @@ vlabels={'Myc';'E2Fm';'E2Fp';'CD';'RB';'CE';'RP';'RE';'AF';'MR'};
 %DO WORK 43 parameters
 param_norm=[5.0 0.25 2.0 0.75 2.0 0.15 2.5 1.75 0.9 900 18 90 90 0.035 0.075 0.05 4.0 1.0 5.0 2.5 1.25 1.25 0.75 12.5 2.5 0.75 500 3.0 0.05 0.05 4.6 4.6 0.75 1.25 1.75 7.5 7.5 0.3 0.3 0.15 3.5 0.6 14.0];
 
-examples=10;
+examples=100000;
 for ll=1:examples
     %    kMYCspan = 9;
     V=10^-15; N=6.02E17;%N:items_per_micromole
@@ -103,11 +103,11 @@ for ll=1:examples
     end
     
     xmin = [0,0,0,0,0,0,0,0,0,0]; % lower bound
-    xmax = [50,80,200,12,30,100,600,400,12.0,10.0]; % upper bound
+    xmax = [50,80,100,20,30,100,300,300,20.0,10.0]; % upper bound
     npoints=1000;
     dis_data=zeros(10,npoints);
     max(mat,[],1)
-    f1 = figure('visible','off');
+    f1 = figure('visible','on');
     set(gcf, 'Position', [1000, 1000, 1000, 500])
     for zz=1:10
         subplot(2,5,zz)
@@ -124,7 +124,8 @@ for ll=1:examples
         % Normalize the density to match the total area of the histogram
         binwidth = binedges(2)-binedges(1); % Finds the width of each bin
         area = nn * binwidth;
-        edges = linspace(xmin(zz),xmax(zz),npoints);
+        thred=min(2.0,xmax(zz)/10);
+        edges = [linspace(0,thred*0.99,100),linspace(thred,xmax(zz),npoints-100)];
         %dis_data(zz,:) = pdf(pd,edges)*trapz(h(1).XData,h(1).YData);
         pd = fitdist(mat(:,zz),'kernel');
         dis_data(zz,:) = pdf(pd,edges);
